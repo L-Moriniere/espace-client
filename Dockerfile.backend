@@ -1,0 +1,24 @@
+# Dockerfile pour le backend Symfony
+FROM php:8.2-fpm
+
+# Installation des dépendances système nécessaires à Symfony et MySQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    git \
+    unzip \
+    libsodium-dev \
+    && docker-php-ext-install pdo pdo_mysql sodium
+
+# Installation de Composer (gestionnaire de dépendances PHP)
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+COPY . /app
+
+# Installation des dépendances PHP du projet
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+EXPOSE 8000
+
+# Commande de démarrage du serveur Symfony
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/frontend/postcss.config.cjs">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/frontend/postcss.config.cjs" />
+              <option name="originalContent" value="module.exports = {&#10;  plugins: {&#10;    '@tailwindcss/postcss': {},&#10;    autoprefixer: {},&#10;  }&#10;};&#10;" />
+              <option name="updatedContent" value="module.exports = {&#10;  plugins: {&#10;    '@tailwindcss/postcss': {},&#10;    autoprefixer: {},&#10;  }&#10;};" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
