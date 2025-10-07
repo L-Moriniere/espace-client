@@ -16,6 +16,12 @@ WORKDIR /app
 
 COPY . /app
 
+# Création du dossier JWT et génération automatique des clés si elles n'existent pas
+RUN mkdir -p /app/config/jwt \
+    && chown www-data:www-data /app/config/jwt \
+    && composer install --no-interaction --prefer-dist --optimize-autoloader \
+    && php bin/console lexik:jwt:generate-keypair --skip-if-exists
+
 # Installation des dépendances PHP du projet
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 EXPOSE 8000

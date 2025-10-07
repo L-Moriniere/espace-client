@@ -1,0 +1,60 @@
+# CI pour Symfony + PHPUnit + PHPStan
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: db_mgp
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, intl, sodium
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            nc -z 127.0.0.1 3306 && break
+            sleep 1
+          done
+      - name: Create test database and grant privileges
+        run: |
+          sudo apt-get install -y mysql-client
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE IF NOT EXISTS db_mgp_test; GRANT ALL PRIVILEGES ON db_mgp_test.* TO 'user'@'%'; FLUSH PRIVILEGES;"
+      - name: Run migrations (test)
+        env:
+          DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+      - name: Run PHPUnit
+        env:
+          DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
+        run: php bin/phpunit --testdox
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --level=7 src

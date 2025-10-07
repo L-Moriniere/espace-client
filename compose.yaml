@@ -9,12 +9,13 @@ services:
       - "8000:8000" # Expose le port 8000 pour accéder à l'API
     volumes:
       - /app/vendor
+      - ./config/jwt:/app/config/jwt # Ajout du volume pour partager les clés JWT
 
     depends_on:
       - database
 
     environment:
-      DATABASE_URL: mysql://user:password@database:3306/dbname
+      DATABASE_URL: mysql://user:mgp_p4ssW0rd!@database:3306/db_mgp
 
 
   frontend:
@@ -33,9 +34,9 @@ services:
   database:
     image: mysql:8.0
     environment:
-      MYSQL_DATABASE: dbname
+      MYSQL_DATABASE: db_mgp
       MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: mgp_p4ssW0rd!
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "3306:3306"

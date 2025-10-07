@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../coleoptedex/.idea/coleoptedex.iml" filepath="$PROJECT_DIR$/../coleoptedex/.idea/coleoptedex.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/espace-client.iml" filepath="$PROJECT_DIR$/.idea/espace-client.iml" />
     </modules>
   </component>
