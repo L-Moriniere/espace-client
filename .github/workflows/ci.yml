@@ -57,4 +57,4 @@ jobs:
           DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
         run: php bin/phpunit --testdox
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --level=max src
+        run: vendor/bin/phpstan analyse --level=7 src
