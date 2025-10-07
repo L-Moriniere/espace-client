@@ -17,7 +17,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Symf
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type:"string", length:180, unique:true)]
     #[Assert\NotBlank(message: 'Email obligatoire')]
     #[Assert\Email(message: 'Email invalide')]
     private ?string $email = null;
@@ -166,8 +166,15 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Symf
 
     public function getUserIdentifier(): string
     {
-        return $this->email ?? '';
+        $email = $this->getEmail();
+
+        if (!$email) { // null ou vide
+            throw new \LogicException('L’utilisateur doit avoir un email non vide pour être identifié.');
+        }
+
+        return $email;
     }
+
 
     public function eraseCredentials(): void
     {
