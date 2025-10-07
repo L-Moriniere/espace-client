@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Validator\Exception\ValidationException;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,9 +34,16 @@ final class AppController extends AbstractController
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
 
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            return $this->json($errors, 400);
+        $violations = $validator->validate($user);
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[] = [
+                    'property' => $violation->getPropertyPath(),
+                    'message' => $violation->getMessage(),
+                ];
+            }
+            return $this->json($errors, 422);
         }
         $user->setPassword($hasher->hashPassword($user, $data['password']));
         $user->setRoles(['ROLE_USER']);
