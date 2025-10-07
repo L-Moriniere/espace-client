@@ -44,10 +44,17 @@ jobs:
             nc -z 127.0.0.1 3306 && break
             sleep 1
           done
-      - name: Run migrations
-        run: php bin/console doctrine:migrations:migrate --no-interaction
+      - name: Create test database and grant privileges
+        run: |
+          sudo apt-get install -y mysql-client
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE IF NOT EXISTS db_mgp_test; GRANT ALL PRIVILEGES ON db_mgp_test.* TO 'user'@'%'; FLUSH PRIVILEGES;"
+      - name: Run migrations (test)
+        env:
+          DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp_test"
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
       - name: Run PHPUnit
+        env:
+          DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp_test"
         run: php bin/phpunit --testdox
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --level=max src
-
