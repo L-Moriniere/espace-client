@@ -15,6 +15,7 @@ class User implements \Symfony\Component\Security\Core\User\UserInterface, \Symf
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    // @phpstan-ignore-next-line
     private ?int $id = null;
 
     #[ORM\Column(type:"string", length:180, unique:true)]
