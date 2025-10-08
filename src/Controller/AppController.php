@@ -97,8 +97,8 @@ final class AppController extends AbstractController
         $user = $userRepository->findOneBy(['email' => $userConnected->getUserIdentifier()]);
 
         //recupere le sujet et le message
-        $subject = $request->request->get('subject', '');
-        $content = $request->request->get('message', '');
+        $subject = (string) $request->request->get('subject', '');
+        $content = (string) $request->request->get('message', '');
         $data = [
             'subject' => $subject,
             'message' => $content
