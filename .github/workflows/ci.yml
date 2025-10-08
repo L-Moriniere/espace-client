@@ -52,6 +52,18 @@ jobs:
         env:
           DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+        # Générer les clés JWT pour les tests
+      - name: Générer les clés JWT pour LexikJWTAuthenticationBundle
+        run: php bin/console lexik:jwt:generate-keypair
+
+      - name: Définir les variables JWT pour Symfony
+        run: |
+            echo "JWT_SECRET_KEY=config/jwt/private.pem" >> $GITHUB_ENV
+            echo "JWT_PUBLIC_KEY=config/jwt/public.pem" >> $GITHUB_ENV
+            echo "JWT_PASSPHRASE=" >> $GITHUB_ENV
+
+    # Étape pour exécuter les tests PHPUnit et PHPStan
       - name: Run PHPUnit
         env:
           DATABASE_URL: "mysql://user:password@127.0.0.1:3306/db_mgp"
