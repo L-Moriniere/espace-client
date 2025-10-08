@@ -73,7 +73,7 @@ final class AppController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $user = $userRepository->findOneBy(['email' => $data['email'] ?? '']);
         if (!$user) {
-            return $this->json(['message' => 'Utilisateur non trouvé'], 404);
+            return $this->json(['message' => 'Utilisateur non trouvé'], 422);
         }
 
         $user->setPassword($data['password'] ?? '');
