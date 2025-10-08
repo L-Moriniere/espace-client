@@ -3,9 +3,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, origin ]
+    branches: [ master, origin, send-message ]
   pull_request:
-    branches: [ master, origin ]
+    branches: [ master, origin, send-message ]
 
 jobs:
   build:
