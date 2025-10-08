@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use ApiPlatform\Validator\Exception\ValidationException;
+use App\Entity\Message;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -84,6 +87,91 @@ final class AppController extends AbstractController
         }
 
         return $this->persistUser($em, $user, $data['password'], $hasher, 'Mot de passe réinitialisé avec succès');
+    }
+
+    #[Route('/send-message', name: 'app_send_message', methods: ['POST'])]
+    public function sendMessage(Request $request, MailerInterface $mailer, EntityManagerInterface $em, UserRepository $userRepository): JsonResponse
+    {
+        //recupere le user connecté
+        $userConnected = $this->getUser();
+        $user = $userRepository->findOneBy(['email' => $userConnected->getUserIdentifier()]);
+
+        //recupere le sujet et le message
+        $subject = $request->request->get('subject', '');
+        $content = $request->request->get('message', '');
+        $data = [
+            'subject' => $subject,
+            'message' => $content
+        ];
+        $emailSender = $user->getEmail();
+
+        $file = $request->files->get('attachment');
+
+        // crée l'email
+        $email = (new Email())
+            ->from($emailSender)
+            ->to('test@localhost') // faux destinataire
+            ->subject($subject)
+            ->text($content);
+
+        // ajout de message pour persister dans la bdd
+        $message = new Message();
+        $message->setUser($user);
+        $message->setSubject($subject);
+        $message->setMessage($content);
+        $message->setSentAt(new \DateTime('now'));
+        $message->setAttachmentFileName($file->getClientOriginalName());
+        $message->setAttachmentSize($file->getSize());
+
+        // vérifications sur le fichier (type, taille, existence)
+        if ($file){
+            $fileSize = $file->getSize();
+            $maxSize = 2 * 1024 * 1024; //2Mo max
+
+            if (!$fileSize) {
+                return $this->json(['message' => 'Le fichier joint est vide ou n’a pas été transmis correctement.'], 422);
+            }
+            if ($fileSize > $maxSize) {
+                return $this->json(['message' => 'Le fichier joint dépasse la taille maximale de 2 Mo.'], 422);
+            }
+
+            $allowedMimeTypes = [
+                'application/pdf',
+            ];
+            $mimeType = $file->getMimeType();
+            if (!in_array($mimeType, $allowedMimeTypes)) {
+                return $this->json([
+                    'message' => 'Seuls les fichiers PDF sont autorisés.',
+                    'mimeType' => $mimeType
+                ], 422);
+            }
+
+            $filePath = $file->getPathname();
+            if (!$filePath) {
+                return $this->json(['message' => 'Le fichier joint est invalide ou n’a pas été transmis correctement.'], 422);
+            }
+            if (!file_exists($filePath) || !is_readable($filePath)) {
+                return $this->json(['message' => 'Le fichier joint n’existe pas ou n’est pas lisible.'], 422);
+            }
+            $email->attachFromPath($filePath, $file->getClientOriginalName());
+        }
+
+        // limite d'envoi à 1 message par heure
+        $lastEmailSent = $user->getLastEmailSent();
+        $now = new \DateTime('now');
+        if ($lastEmailSent && $now->getTimestamp() - $lastEmailSent->getTimestamp() < 3600) {
+            return $this->json(['message' => 'Vous ne pouvez envoyer qu\'un message toutes les heures.'], 429);
+        }
+        else{
+            //ajout de la date d'envoi et envoi du message
+            $user->setLastEmailSent(new \DateTime('now'));
+            $em->persist($user);
+            $mailer->send($email);
+            $em->persist($message);
+            $em->flush();
+        }
+
+        return $this->json(['message' => 'Message envoyé avec succès', 'data' => $data], 200);
     }
 
 }
