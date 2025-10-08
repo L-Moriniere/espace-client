@@ -33,8 +33,6 @@ final class AppLoginCheckTest extends WebTestCase
 
     public function testLoginSuccess(): void
     {
-
-
         // Requête de login
         $this->client->request(
             'POST',
@@ -43,7 +41,7 @@ final class AppLoginCheckTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'test@mail.com',
+                'email' => 'test2@mail.com',
                 'password' => 'Motdep4sse!'
             ])
         );
