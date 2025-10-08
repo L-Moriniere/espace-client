@@ -1,4 +1,4 @@
-ù# CI pour Symfony + PHPUnit + PHPStan
+# CI pour Symfony + PHPUnit + PHPStan
 name: CI
 
 on:
