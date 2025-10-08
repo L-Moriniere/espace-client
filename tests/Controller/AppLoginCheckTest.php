@@ -25,7 +25,7 @@ final class AppLoginCheckTest extends WebTestCase
 
         // Création d'un utilisateur pour le login
         $user = new User();
-        $user->setEmail('test@mail.com');
+        $user->setEmail('test2@mail.com');
         $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
         $this->em->persist($user);
         $this->em->flush();
