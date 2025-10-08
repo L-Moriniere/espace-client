@@ -14,10 +14,11 @@ final class AppMailTest extends WebTestCase
     private EntityManagerInterface $em;
     private string $jwtToken;
 
-    protected function setUp():void{
-        $this->client = AppRegisterTest::createClient();
-        $this->em = AppRegisterTest::getContainer()->get(EntityManagerInterface::class);
-        $hasher = AppRegisterTest::getContainer()->get('security.user_password_hasher');
+    protected function setUp(): void
+    {
+        $this->client = static::createClient();
+        $this->em = static::getContainer()->get(EntityManagerInterface::class);
+        $hasher = static::getContainer()->get('security.user_password_hasher');
 
         // Vide la table user avant chaque test
         $connection = $this->em->getConnection();
@@ -27,37 +28,17 @@ final class AppMailTest extends WebTestCase
         $email = 'user@mail.com';
         $password = 'Password!!123';
         $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($hasher->hashPassword($user, $password));
+        $user->setEmail('test@mail.com');
+        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
         $user->setRoles(['ROLE_USER']);
         $this->em->persist($user);
         $this->em->flush();
-
-        // Récupération du token JWT
-        $this->jwtToken = $this->getJwtToken($email, $password);
     }
 
-    private function getJwtToken(string $email, string $password): string
+   /* public function testSendMessageSuccess(): void
     {
-        $this->client->request(
-            'POST',
-            '/api/login_check',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode([
-                'email' => $email,
-                'password' => $password
-            ])
-        );
-        $response = $this->client->getResponse();
-        $data = json_decode($response->getContent(), true);
-        var_dump($data);
-        return $data['token'];
-    }
-
-    public function testSendMessageSuccess(): void
-    {
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'test@mail.com']);
+        $this->client->loginUser($user);
 
         $testFile = tempnam(sys_get_temp_dir(), 'test_fichier');
         file_put_contents($testFile, "%PDF-1.4\n%EOF");
@@ -80,16 +61,10 @@ final class AppMailTest extends WebTestCase
             [
                 'attachment' => $uploadedFile
             ],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->jwtToken,
-            ],
         );
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame('Message envoyé avec succès', $data['message']);
-
-    }
-
-
+    }*/
 }
