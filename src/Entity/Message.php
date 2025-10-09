@@ -32,7 +32,7 @@ class Message
     private ?float $attachment_size = null;
 
     #[ORM\Column]
-    private ?\DateTime $created_at = null;
+    private ?\DateTime $sent_at = null;
 
     public function getId(): ?int
     {
@@ -99,15 +99,16 @@ class Message
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getSentAt(): ?\DateTime
     {
-        return $this->created_at;
+        return $this->sent_at;
     }
 
-    public function setCreatedAt(\DateTime $created_at): static
+    public function setSentAt(\DateTime $sent_at): static
     {
-        $this->created_at = $created_at;
+        $this->sent_at = $sent_at;
 
         return $this;
     }
+
 }
