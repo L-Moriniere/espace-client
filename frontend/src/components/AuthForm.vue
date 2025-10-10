@@ -2,19 +2,9 @@
   <div class="form-container">
     <h1>{{ title }}</h1>
     <form @submit.prevent="onSubmit">
-      <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        required
-      />
+      <input v-model="email" type="email" placeholder="Email" required />
 
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Mot de passe"
-        required
-      />
+      <input v-model="password" type="password" placeholder="Mot de passe" required />
 
       <!-- Affiche les règles de mot de passe uniquement en mode inscription -->
       <ul v-if="validatePassword" class="password-rules">
@@ -32,14 +22,12 @@
         </li>
       </ul>
 
-      <button
-        type="submit"
-        :disabled="validatePassword && !isPasswordValid"
-      >
+      <button type="submit" :disabled="validatePassword && !isPasswordValid">
         {{ buttonText }}
       </button>
     </form>
 
+    <!--    affiche une liste d'erreur ou un élément-->
     <ul v-if="Array.isArray(error) && error.length" class="login-error-list">
       <li v-for="(err, i) in error" :key="i" class="login-error">{{ err }}</li>
     </ul>
@@ -48,35 +36,34 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits } from 'vue';
+import { ref, computed, defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   title: { type: String, default: 'Connexion' },
   buttonText: { type: String, default: 'Se connecter' },
   error: { type: [String, Array], default: '' },
-  validatePassword: { type: Boolean, default: false } // 👈 active ou non la validation
-});
+  validatePassword: { type: Boolean, default: false },
+})
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['submit'])
 
-const email = ref('');
-const password = ref('');
+const email = ref('')
+const password = ref('')
 
+//vérifie que toutes les règles du mdp sont vérifiées
 const isPasswordValid = computed(() => {
   return (
     password.value.length >= 8 &&
     /[A-Z]/.test(password.value) &&
     /\d/.test(password.value) &&
     /[\W_]/.test(password.value)
-  );
-});
+  )
+})
 
 function onSubmit() {
-  if (props.validatePassword && !isPasswordValid.value) return;
-  emit('submit', { email: email.value, password: password.value });
+  if (props.validatePassword && !isPasswordValid.value) return
+  emit('submit', { email: email.value, password: password.value })
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

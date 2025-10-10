@@ -3,7 +3,7 @@
     <div class="form-wrapper">
 
         <form @submit.prevent="onSubmit">
-          <!-- Étape 1 : Email -->
+          <!-- Vérification email -->
           <div class="form-container" v-if="!emailValidated">
             <h1>Vérifier adresse email</h1>
 
@@ -12,10 +12,7 @@
               {{ loading ? 'Vérification...' : 'Vérifier email' }}
             </button>
             <!-- Affichage des erreurs -->
-            <ul v-if="Array.isArray(error) && error.length" class="login-error-list">
-              <li v-for="(err, i) in error" :key="i" class="login-error">{{ err }}</li>
-            </ul>
-            <p v-else-if="error" class="login-error">{{ error }}</p>
+            <p v-if="error" class="login-error">{{ error }}</p>
           </div>
 
           <!-- Étape 2 : Nouveau mot de passe -->
@@ -44,10 +41,7 @@
               {{ loading ? 'Réinitialisation...' : 'Réinitialiser' }}
             </button>
             <!-- Affichage des erreurs -->
-            <ul v-if="Array.isArray(error) && error.length" class="login-error-list">
-              <li v-for="(err, i) in error" :key="i" class="login-error">{{ err }}</li>
-            </ul>
-            <p v-else-if="error" class="login-error">{{ error }}</p>
+            <p v-if="error" class="login-error">{{ error }}</p>
           </div>
 
         </form>
@@ -90,8 +84,9 @@ async function onSubmit() {
   loading.value = true
 
   try {
+    //si email non validé
     if (!emailValidated.value) {
-      // Étape 1 : Vérifier email
+      // vérification email
       try {
         const res = await fetch('http://localhost:8000/api/request-reset-password', {
           method: 'POST',
@@ -103,12 +98,14 @@ async function onSubmit() {
           error.value = data.message
           return
         }
+        //email validé
         emailValidated.value = true
         validatePassword.value = true
       } catch (err) {
         error.value = err.message
       }
     } else {
+      //appel api avec email et nouveau mot de passe
       const res = await fetch('http://localhost:8000/api/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

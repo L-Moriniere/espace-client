@@ -13,10 +13,6 @@
         <router-link to="/login">Se connecter</router-link>
         <router-link to="/reset-password">Mot de passe oublié ?</router-link>
       </div>
-      <ul v-if="Array.isArray(error) && error.length" class="form-error-list">
-        <li v-for="(err, i) in error" :key="i" class="form-error">{{ err }}</li>
-      </ul>
-      <p v-else-if="error" class="form-error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -33,27 +29,22 @@ const error = ref('')
 
 async function handleRegister({ email, password }) {
   error.value = ''
+  //appel api pour l'inscription
   try {
     const response = await api.post('/register', {
       email,
       password,
     })
-
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token)
-      router.push('/dashboard')
-    } else {
-      router.push('/login')
+    //Si réponse OK
+    if (response.status === 201) {
+      // Redirige vers la page de connexion avec message flash
+      await router.push({
+        path: '/login',
+        query: {flash: 'Inscription réussie !'},
+      })
     }
   } catch (err) {
-    if (err.response && err.response.data) {
-      // On récupère le message d'erreur précis de l'API
-      const apiError = err.response.data.message || err.response.data.error || 'Erreur lors de l’inscription.'
-      error.value = [apiError]
-    } else {
-      error.value = ['Erreur réseau ou serveur.']
-    }
+    error.value = err.response.data.message
   }
 }
-
 </script>
