@@ -68,6 +68,19 @@ final class AppController extends AbstractController
         return $this->persistUser($em, $user, $data['password'], $hasher);
     }
 
+    #[Route('/request-reset-password', name: 'app_request_reset_password', methods: ['POST'])]
+    public function requestResetPassword(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy(['email' => $data['email'] ?? '']);
+        if (!$user) {
+            return $this->json(['message' => 'Utilisateur non trouvé'], 422);
+        }
+
+        return $this->json(['message' => 'Lien de réinitialisation du mot de passe envoyé à votre adresse email'], 200);
+
+    }
+
 
     #[Route('/reset-password', name: 'app_reset_password')]
     public function resetPassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher,

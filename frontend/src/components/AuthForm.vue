@@ -16,7 +16,7 @@
         required
       />
 
-      <!-- ✅ Affiche les règles de mot de passe uniquement en mode inscription -->
+      <!-- Affiche les règles de mot de passe uniquement en mode inscription -->
       <ul v-if="validatePassword" class="password-rules">
         <li :class="{ valid: password.length >= 8 }">
           {{ password.length >= 8 ? '✅' : '❌' }} Au moins 8 caractères
@@ -78,35 +78,5 @@ function onSubmit() {
 </script>
 
 <style scoped>
-.login-error {
-  color: #ef4444;
-  text-align: left;
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin-top: 0.5rem;
-}
-.login-error-list {
-  margin: 0.5rem 0 0 0;
-  padding: 0;
-  list-style: none;
-}
-.password-rules {
-  list-style: none;
-  padding: 0;
-  margin: 0.5rem 0 1rem;
-  font-size: 0.9rem;
-  text-align: left;
-}
-.password-rules li {
-  margin: 0.25rem 0;
-  color: #ef4444;
-}
-.password-rules li.valid {
-  color: #22c55e;
-  font-weight: 500;
-}
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+
 </style>
