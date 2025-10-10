@@ -120,11 +120,10 @@ final class AppController extends AbstractController
         $message->setSubject($subject);
         $message->setMessage($content);
         $message->setSentAt(new \DateTime('now'));
-        $message->setAttachmentFileName($file->getClientOriginalName());
-        $message->setAttachmentSize($file->getSize());
 
         // vérifications sur le fichier (type, taille, existence)
         if ($file){
+
             $fileSize = $file->getSize();
             $maxSize = 2 * 1024 * 1024; //2Mo max
 
@@ -154,6 +153,8 @@ final class AppController extends AbstractController
                 return $this->json(['message' => 'Le fichier joint n’existe pas ou n’est pas lisible.'], 422);
             }
             $email->attachFromPath($filePath, $file->getClientOriginalName());
+            $message->setAttachmentFileName($file->getClientOriginalName());
+            $message->setAttachmentSize($file->getSize());
         }
 
         // limite d'envoi à 1 message par heure
