@@ -31,10 +31,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-container:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.12);
-}
+
 
 /* --- Title --- */
 .form-container h1 {
@@ -165,6 +162,7 @@
   display: flex;
   flex-direction: column;
   font-weight: 500;
+  color: black;
 }
 
 .contact-input,
@@ -250,3 +248,16 @@ button[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+.logout a {
+  float: right;
+  display: inline-block;
+  color: #7c5c71;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  text-decoration: none; /* supprime le soulignement du lien */
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+

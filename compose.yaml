@@ -21,7 +21,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend # Construit l'image à partir du dossier frontend
+      context: ./frontend
       dockerfile: Dockerfile.frontend
     container_name: frontend_vue
     restart: unless-stopped

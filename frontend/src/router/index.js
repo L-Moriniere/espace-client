@@ -3,7 +3,6 @@ import HomeView from '../views/HomeView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
-import RequestResetPasswordView from "@/views/RequestResetPasswordView.vue";
 
 
 //Différentes routes
@@ -23,11 +22,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
-    },
-    {
-      path: '/request-reset-password',
-      name: 'reset-password',
-      component: RequestResetPasswordView,
     },
     {
       path: '/reset-password',

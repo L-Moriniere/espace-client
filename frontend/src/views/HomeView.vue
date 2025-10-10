@@ -1,9 +1,11 @@
 <template>
-  <Navbar />
-  <div class="contact-container">
+  <div class="form-container">
+    <div class="logout">
+      <a @click="logout">Se déconnecter</a>
+    </div>
     <h1 class="home-title">Contact</h1>
 
-    <form @submit.prevent="handleSubmit" class="contact-form">
+    <form @submit.prevent="onSubmit" class="contact-form">
       <label class="contact-label">
         Sujet :
         <input
@@ -36,85 +38,90 @@
         <span v-if="fileError" class="contact-error">{{ fileError }}</span>
       </label>
 
-      <button
-        type="submit"
-        :disabled="isSubmitting"
-        class="contact-button"
-      >
-        Envoyer
-      </button>
+      <button type="submit" :disabled="isSubmitting" class="contact-button">Envoyer</button>
 
       <p v-if="successMessage" class="contact-success">{{ successMessage }}</p>
-      <p v-if="submitError" class="contact-error">{{ submitError }}</p>
+      <p v-if="error" class="login-error">{{ error }}</p>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import api from '@/services/api';
+import { ref } from 'vue'
+import api from '@/services/api'
 import '@/assets/mgp.css' // Chemin vers votre fichier CSS
-import Navbar from '@/components/Navbar.vue'
+import { useRouter } from 'vue-router';
 
-const subject = ref('');
-const message = ref('');
-const file = ref(null);
-const fileError = ref('');
-const successMessage = ref('');
-const submitError = ref('');
-const isSubmitting = ref(false);
+const subject = ref('')
+const message = ref('')
+const file = ref(null)
+const fileError = ref('')
+const successMessage = ref('')
+const error = ref('')
+const isSubmitting = ref(false)
+const router = useRouter();
+
 
 function handleFileChange(event) {
-  fileError.value = '';
-  const selectedFile = event.target.files[0];
+  fileError.value = ''
+  const selectedFile = event.target.files[0]
+
 
   if (selectedFile) {
     if (selectedFile.type !== 'application/pdf') {
-      fileError.value = 'Seuls les fichiers PDF sont autorisés.';
-      file.value = null;
+      fileError.value = 'Seuls les fichiers PDF sont autorisés.'
+      file.value = null
     } else if (selectedFile.size > 2 * 1024 * 1024) {
-      fileError.value = 'Le fichier ne doit pas dépasser 2 Mo.';
-      file.value = null;
+      fileError.value = 'Le fichier ne doit pas dépasser 2 Mo.'
+      file.value = null
     } else {
-      file.value = selectedFile;
+      file.value = selectedFile
     }
   }
 }
 
-async function handleSubmit() {
-  submitError.value = '';
-  successMessage.value = '';
+async function onSubmit() {
+  error.value = ''
+  successMessage.value = ''
 
-  if (!subject.value || !message.value) return;
+  if (!subject.value || !message.value) return
+  if (fileError.value) return
 
-  if (fileError.value) return;
-
-  const formData = new FormData();
-  formData.append('subject', subject.value);
-  formData.append('message', message.value);
+  const formData = new FormData()
+  formData.append('subject', subject.value)
+  formData.append('message', message.value)
   if (file.value) {
-    formData.append('file', file.value);
+    formData.append('attachment', file.value)
   }
 
-  isSubmitting.value = true;
+  isSubmitting.value = true
 
   try {
-    const response = await api.post('/send-message', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const res = await api.post('/send-message', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
 
-    successMessage.value = 'Message envoyé avec succès !';
-    subject.value = '';
-    message.value = '';
-    file.value = null;
-    document.querySelector('input[type=file]').value = '';
+    successMessage.value = 'Message envoyé avec succès !'
+    subject.value = ''
+    message.value = ''
+    file.value = null
+    document.querySelector('input[type=file]').value = ''
   } catch (err) {
-    submitError.value = 'Erreur lors de l’envoi du message.';
+    if (err.response && err.response.data) {
+      // Affiche uniquement le message d'erreur texte
+      error.value = err.response.data.message || err.response.data.error || 'Une erreur est survenue.'
+    } else {
+      error.value = 'Erreur réseau ou serveur.'
+    }
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
 }
-</script>
 
+
+
+function logout() {
+  localStorage.removeItem('token')
+  router.push('/login')
+}
+</script>

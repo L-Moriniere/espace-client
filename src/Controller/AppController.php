@@ -52,9 +52,13 @@ final class AppController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register', methods: ['POST'])]
-    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, ValidatorInterface $validator): JsonResponse
+    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, ValidatorInterface $validator, UserRepository $userRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        if ($userRepository->findOneBy(['email' => $data['email'] ?? ''])) {
+            return $this->json(['message' => 'Email déjà utilisé'], 422);
+        }
 
         $user = new User();
         $user->setEmail($data['email']);

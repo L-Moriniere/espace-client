@@ -35,9 +35,10 @@ async function handleRegister({ email, password }) {
   error.value = ''
   try {
     const response = await api.post('/register', {
-      email: email,
-      password: password,
+      email,
+      password,
     })
+
     if (response.data.token) {
       localStorage.setItem('token', response.data.token)
       router.push('/dashboard')
@@ -46,8 +47,13 @@ async function handleRegister({ email, password }) {
     }
   } catch (err) {
     if (err.response && err.response.data) {
-      error.value = ['Erreur lors de l’inscription.']
+      // On récupère le message d'erreur précis de l'API
+      const apiError = err.response.data.message || err.response.data.error || 'Erreur lors de l’inscription.'
+      error.value = [apiError]
+    } else {
+      error.value = ['Erreur réseau ou serveur.']
     }
   }
 }
+
 </script>

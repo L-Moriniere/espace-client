@@ -1,6 +1,6 @@
 <template>
   <div class="form-bg">
-    <div class="form-container">
+    <div class="form-wrapper">
       <AuthForm
         title="Connexion"
         buttonText="Se connecter"
