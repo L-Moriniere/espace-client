@@ -12,12 +12,13 @@ final class AppLoginCheckTest extends WebTestCase
 
     private $client;
     private EntityManagerInterface $em;
+    private UserPasswordHasherInterface $hasher;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->em = static::getContainer()->get(EntityManagerInterface::class);
-        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
 
         // Vide la table user avant chaque test
         $connection = $this->em->getConnection();
@@ -26,7 +27,7 @@ final class AppLoginCheckTest extends WebTestCase
         // Création d'un utilisateur pour le login
         $user = new User();
         $user->setEmail('test2@mail.com');
-        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
+        $user->setPassword($this->hasher->hashPassword($user, 'Motdep4sse!'));
         $this->em->persist($user);
         $this->em->flush();
     }
@@ -41,8 +42,8 @@ final class AppLoginCheckTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'test2@mail.com',
-                'password' => 'Motdep4sse!'
+                'email' => 'test2@mail.com', // Bon email
+                'password' => 'Motdep4sse!' // Bon mot de passe
             ])
         );
 
@@ -57,10 +58,10 @@ final class AppLoginCheckTest extends WebTestCase
 
     public function testLoginFailWrongEmail(): void
     {
-        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+
         $user = new User();
         $user->setEmail('test@mail.com');
-        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
+        $user->setPassword($this->hasher->hashPassword($user, 'Motdep4sse!'));
         $this->em->persist($user);
         $this->em->flush();
 
@@ -72,7 +73,7 @@ final class AppLoginCheckTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'test11@mail.com',
+                'email' => 'test11@mail.com', // Mauvais email
                 'password' => 'Motdep4sse!'
             ])
         );
@@ -84,10 +85,9 @@ final class AppLoginCheckTest extends WebTestCase
 
     public function testLoginFailWrongPassword(): void
     {
-        $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         $user = new User();
         $user->setEmail('test@mail.com');
-        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
+        $user->setPassword($this->hasher->hashPassword($user, 'Motdep4sse!'));
         $this->em->persist($user);
         $this->em->flush();
 
@@ -100,7 +100,7 @@ final class AppLoginCheckTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'test@mail.com',
-                'password' => 'mdp'
+                'password' => 'mdp' // Mauvais mot de passe
             ])
         );
 

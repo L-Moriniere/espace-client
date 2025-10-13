@@ -3,10 +3,8 @@
     <h1>{{ title }}</h1>
     <form @submit.prevent="onSubmit">
       <input v-model="email" type="email" placeholder="Email" required />
-
       <input v-model="password" type="password" placeholder="Mot de passe" required />
 
-      <!-- Affiche les règles de mot de passe uniquement en mode inscription -->
       <ul v-if="validatePassword" class="password-rules">
         <li :class="{ valid: password.length >= 8 }">
           {{ password.length >= 8 ? '✅' : '❌' }} Au moins 8 caractères
@@ -22,12 +20,12 @@
         </li>
       </ul>
 
-      <button type="submit" :disabled="validatePassword && !isPasswordValid">
-        {{ buttonText }}
+      <button type="submit" :disabled="validatePassword && !isPasswordValid || isLoading">
+        <span v-if="!isLoading">{{ buttonText }}</span>
+        <span v-else class="spinner"></span>
       </button>
     </form>
 
-    <!--    affiche une liste d'erreur ou un élément-->
     <ul v-if="Array.isArray(error) && error.length" class="login-error-list">
       <li v-for="(err, i) in error" :key="i" class="login-error">{{ err }}</li>
     </ul>
@@ -49,8 +47,8 @@ const emit = defineEmits(['submit'])
 
 const email = ref('')
 const password = ref('')
+const isLoading = ref(false)
 
-//vérifie que toutes les règles du mdp sont vérifiées
 const isPasswordValid = computed(() => {
   return (
     password.value.length >= 8 &&
@@ -62,8 +60,36 @@ const isPasswordValid = computed(() => {
 
 function onSubmit() {
   if (props.validatePassword && !isPasswordValid.value) return
+
+  isLoading.value = true
   emit('submit', { email: email.value, password: password.value })
+
+  // Pour tester le spinner, on simule un délai de 2 secondes
+  setTimeout(() => {
+    isLoading.value = false
+  }, 2000)
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  position: relative;
+  padding: 0.5em 1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0,0,0,0.2);
+  border-top-color: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>

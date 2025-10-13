@@ -16,6 +16,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function getUsersLastHour(): array
+    {
+        $oneHourAgo = new \DateTime('now', new \DateTimeZone('UTC'));
+
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.last_login >= :oneHourAgo')
+            ->setParameter('oneHourAgo', $oneHourAgo)
+            ->getQuery()
+            ->getResult();
+
+
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
