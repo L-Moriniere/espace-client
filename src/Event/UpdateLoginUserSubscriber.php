@@ -24,6 +24,8 @@ class UpdateLoginUserSubscriber implements EventSubscriberInterface
 
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
+        $timezone = new \DateTimeZone('Europe/Paris');
+
         //Récupérer l'utilisateur connecté
         $user = $event->getUser();
 
@@ -33,7 +35,7 @@ class UpdateLoginUserSubscriber implements EventSubscriberInterface
         }
 
         //Mettre à jour la date de dernière connexion
-        $user->setLastLogin(new \DateTime());
+        $user->setLastLogin(new \DateTime('', $timezone));
         $this->entityManager->flush();
     }
 
