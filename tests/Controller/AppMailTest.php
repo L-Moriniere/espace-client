@@ -25,17 +25,17 @@ final class AppMailTest extends WebTestCase
         $connection->executeStatement("DELETE FROM user");
 
         // Création d'un utilisateur pour le login
-//        $email = 'user@mail.com';
-//        $password = 'Password!!123';
-//        $user = new User();
-//        $user->setEmail('test@mail.com');
-//        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
-//        $user->setRoles(['ROLE_USER']);
-//        $this->em->persist($user);
-//        $this->em->flush();
+        $email = 'user@mail.com';
+        $password = 'Password!!123';
+        $user = new User();
+        $user->setEmail('test@mail.com');
+        $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
+        $user->setRoles(['ROLE_USER']);
+        $this->em->persist($user);
+        $this->em->flush();
     }
 
-   /* public function testSendMessageSuccess(): void
+    public function testSendMessageSuccess(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'test@mail.com']);
         $this->client->loginUser($user);
@@ -66,7 +66,7 @@ final class AppMailTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame('Message envoyé avec succès', $data['message']);
-    }*/
+    }
 
     public function testAlwaysTrue(): void
     {
