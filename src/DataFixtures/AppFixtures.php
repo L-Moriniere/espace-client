@@ -19,31 +19,33 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $timezone = new \DateTimeZone('Europe/Paris');
+
         $usersData = [
             [
                 'email' => 'user1@example.com',
                 'password' => 'Password123!',
-                'lastLogin' => new \DateTime('-30 minutes'), // actif récemment
+                'lastLogin' => new \DateTime('-30 minutes', $timezone), // actif récemment
             ],
             [
                 'email' => 'user2@example.com',
                 'password' => 'Password456!',
-                'lastLogin' => new \DateTime('-2 hours'), // inactif
+                'lastLogin' => new \DateTime('-2 hours', $timezone), // inactif
             ],
             [
                 'email' => 'user3@example.com',
                 'password' => 'Password789!',
-                'lastLogin' => new \DateTime('-10 minutes'), // actif récemment
+                'lastLogin' => new \DateTime('-10 minutes', $timezone), // actif récemment
             ],
             [
                 'email' => 'user4@example.com',
                 'password' => 'PasswordABC!',
-                'lastLogin' => new \DateTime('-2 hours'), // inactif
+                'lastLogin' => new \DateTime('-2 hours', $timezone), // inactif
             ],
             [
                 'email' => 'user5@example.com',
                 'password' => 'PasswordXYZ!',
-                'lastLogin' => new \DateTime('-50 minutes'), // actif récemment
+                'lastLogin' => new \DateTime('-50 minutes', $timezone), // actif récemment
             ],
         ];
 

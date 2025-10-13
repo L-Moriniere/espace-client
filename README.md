@@ -12,126 +12,55 @@ Ce projet est une application basée sur le framework Symfony version **7.3.4**.
 
 ### **Étapes pour démarrer le projet :**
 
-1. Clonez le dépôt :
+1. Installez les dépendances PHP :
    ```bash
-   git clone <url-du-depot>
-   cd <nom-du-dossier>
+   make install
    ```
+   Cela installera les dépendances Symfony et VueJS
 
-2. Lancez les conteneurs Docker :
-   ```bash
-   docker-compose up -d
-   ```
-
-3. Installez les dépendances PHP :
-   Si vous utilisez Docker, ouvrez un shell dans le conteneur Symfony :
-   ```bash
-   docker exec -it <nom_du_conteneur_php> bash
-   composer install
-   ```
-   Ou, si vous n'utilisez pas Docker :
+   Ou sinon
    ```bash
    composer install
-   ```
-
-4. Installez les dépendances npm :
-   ```bash
+   cd frontend
    npm install
    ```
 
-5. Compilez les fichiers CSS avec TailwindCSS :
+2. Générer les clés JWT :
    ```bash
-   npm run build
+   make keys
    ```
 
-6. Configurez la base de données :
-    - L'application utilise **SQLite** par défaut. Le fichier de configuration se trouve dans `.env`.
-      Si nécessaire, changez la configuration pour une autre base de données (MySQL, PostgreSQL, etc.).
-
-    - Initialisez la base :
-      ```bash
-      symfony console doctrine:database:create
-      symfony console doctrine:migrations:migrate
-      ```
-
-7. Démarrez le serveur Symfony en mode développement :
+3. Créer la BDD de test
    ```bash
-   symfony serve
+   make db-test
    ```
-   Ou si vous utilisez Docker et exposez un port HTTP (par exemple, `http://localhost:8000`).
-
----
-
-## ⚙️ **Configuration**
-
-### **Fichier `.env`**
-
-Voici les principales variables d'environnement que vous pouvez ajuster dans votre fichier `.env` :
-```env
-### Base de données (par défaut SQLite)
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
-
-### JWT (clé privée et publique)
-JWT_SECRET_KEY=/path/to/private.pem
-JWT_PUBLIC_KEY=/path/to/public.pem
-JWT_PASSPHRASE=your_secret_phrase
-
-### Mailer
-MAILER_DSN=smtp://localhost
-
-### Application
-APP_ENV=dev
-APP_SECRET=your_secret_key
-```
-
-Pour les bases MySQL ou PostgreSQL, remplacez `DATABASE_URL` comme suit :
-- MySQL :
-  ```
-  DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name"
-  ```
-- PostgreSQL :
-  ```
-  DATABASE_URL="pgsql://db_user:db_password@127.0.0.1:5432/db_name"
-  ```
-
----
-
-## 🛠️ **Commandes principales**
-
-### **Symfony console :**
-- Lancer le serveur Symfony :
+   
+4. Lancer les conteneurs Docker :
+   ```bash
+   docker-compose up -d
+   ```
+   ou
+    ```bash
+   make up
+   ```
+   
+### Autres commandes utiles :
+- Pour arrêter les conteneurs :
   ```bash
-  symfony serve
+  docker-compose down
   ```
-- Créer une migration après modification du schéma :
+  ou
   ```bash
-  symfony console doctrine:migrations:diff
-  ```
-- Appliquer les migrations sur la base de données :
-  ```bash
-  symfony console doctrine:migrations:migrate
-  ```
-- Créer un utilisateur via une commande personnalisée (exemple) :
-  ```bash
-  symfony console app:create-user --email=email@example.com --password=your_password
+  make down
   ```
 
-### **npm :**
-- Installer les packages :
+- Charger les fixtures de test :
   ```bash
-  npm install
+  make fixtures
   ```
-- Lancer le mode de développement (watch) avec TailwindCSS :
-  ```bash
-  npm run dev
-  ```
-- Compiler les fichiers CSS pour la production :
-  ```bash
-  npm run build
-  ```
+  
+- Lancer la commande Cron pour voir le nombre d'utilisateurs connectés:
+    ```bash
+    make users
+    ```
 
----
-
-## 📂 **Architecture du projet**
-
-### **Backend :**

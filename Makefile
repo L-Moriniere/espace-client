@@ -30,5 +30,11 @@ test:
 keys:
 	docker exec -it symfony_api php bin/console lexik:jwt:generate-keypair
 
-.PHONY: up down restart install migrate cache-clear lint phpstan test
+fixtures:
+	docker exec -it symfony_api php bin/console doctrine:fixtures:load
+
+users:
+	docker exec -it symfony_api php bin/console app:check-connected-users
+
+.PHONY: up down restart install migrate cache-clear lint phpstan test keys fixtures users
 
