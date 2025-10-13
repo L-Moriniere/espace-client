@@ -11,7 +11,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class AppMailTest extends WebTestCase
 {
 
-    private $client;
+//    private $client;
     private EntityManagerInterface $em;
 
     protected function setUp(): void
@@ -20,7 +20,7 @@ final class AppMailTest extends WebTestCase
         $this->em = static::getContainer()->get(EntityManagerInterface::class);
         $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
 
-        // Vide la table user avant chaque test
+       /* // Vide la table user avant chaque test
         $connection = $this->em->getConnection();
         $connection->executeStatement("DELETE FROM user");
 
@@ -30,7 +30,7 @@ final class AppMailTest extends WebTestCase
         $user->setPassword($hasher->hashPassword($user, 'Motdep4sse!'));
         $user->setRoles(['ROLE_USER']);
         $this->em->persist($user);
-        $this->em->flush();
+        $this->em->flush();*/
     }
 
  /*   public function testSendMessageSuccess(): void
