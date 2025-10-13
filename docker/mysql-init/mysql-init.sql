@@ -1,8 +1,8 @@
--- Crée la base de test si elle n'existe pas
+-- Crée la base principale et la base de test
+CREATE DATABASE IF NOT EXISTS db_mgp;
 CREATE DATABASE IF NOT EXISTS db_mgp_test;
 
--- Crée ou recrée l'utilisateur avec les droits sur la base de test
-DROP USER IF EXISTS 'user'@'%';
-CREATE USER 'user'@'%' IDENTIFIED BY 'mgp_p4ssW0rd!';
+-- Donne les droits à l'utilisateur existant sur les deux bases
+GRANT ALL PRIVILEGES ON db_mgp.* TO 'user'@'%';
 GRANT ALL PRIVILEGES ON db_mgp_test.* TO 'user'@'%';
 FLUSH PRIVILEGES;

@@ -21,10 +21,14 @@ lint:
 	php -l src/
 	cd frontend && npm run lint
 
+db-test:
+	docker exec -it symfony_api php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
 test:
 	docker exec -it symfony_api php bin/phpunit
 
-
+keys:
+	docker exec -it symfony_api php bin/console lexik:jwt:generate-keypair
 
 .PHONY: up down restart install migrate cache-clear lint phpstan test
 
