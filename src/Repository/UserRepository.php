@@ -16,6 +16,9 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * @return User[]
+     */
     public function getUsersLastHour(): array
     {
         $oneHourAgo = new \DateTime('now', new \DateTimeZone('UTC'));
