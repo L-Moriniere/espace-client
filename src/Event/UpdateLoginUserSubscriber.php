@@ -28,7 +28,7 @@ class UpdateLoginUserSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
 
         //Vérifier que l'utilisateur est bien un objet et qu'il possède la méthode setLastLogin
-        if (!is_object($user) || !method_exists($user, 'setLastLogin')) {
+        if (!method_exists($user, 'setLastLogin')) {
             return;
         }
 
