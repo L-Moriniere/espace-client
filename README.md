@@ -24,18 +24,7 @@ Ce projet est une application basée sur le framework Symfony version **7.3.4**.
    cd frontend
    npm install
    ```
-
-2. Générer les clés JWT :
-   ```bash
-   make keys
-   ```
-
-3. Créer la BDD de test
-   ```bash
-   make db-test
-   ```
-   
-4. Lancer les conteneurs Docker :
+2. Lancer les conteneurs Docker :
    ```bash
    docker-compose up -d
    ```
@@ -43,6 +32,17 @@ Ce projet est une application basée sur le framework Symfony version **7.3.4**.
     ```bash
    make up
    ```
+
+3. Générer les clés JWT :
+   ```bash
+   make keys
+   ```
+
+4. Créer la BDD de test
+   ```bash
+   make db-test
+   ```
+   
    
 ### Autres commandes utiles :
 - Pour arrêter les conteneurs :
@@ -62,5 +62,9 @@ Ce projet est une application basée sur le framework Symfony version **7.3.4**.
 - Lancer la commande Cron pour voir le nombre d'utilisateurs connectés:
     ```bash
     make users
+    ```
+- Lancer les tests
+    ```bash
+    make test
     ```
 
