@@ -42,7 +42,8 @@ Ce projet est une application basée sur le framework Symfony version **7.3.4**.
    ```bash
    make db-test
    ```
-   
+
+L'application se trouve sur : http://localhost:3000/
    
 ### Autres commandes utiles :
 - Pour arrêter les conteneurs :
