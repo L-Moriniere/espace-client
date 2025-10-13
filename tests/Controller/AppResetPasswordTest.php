@@ -23,9 +23,10 @@ final class AppResetPasswordTest extends WebTestCase
 
     public function testResetPasswordSuccess(): void
     {
+        // Création d'un utilisateur pour le test
         $user = new User();
         $user->setEmail('user@mail.com');
-        $user->setPassword('AncienPassword!123'); // mot de passe initial (hashé si besoin)
+        $user->setPassword('AncienPassword!123');
         $user->setRoles(['ROLE_USER']);
         $this->em->persist($user);
         $this->em->flush();
@@ -63,7 +64,7 @@ final class AppResetPasswordTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'mail@test.fr',
+                'email' => 'mail@test.fr', // email non existant
                 'password' => 'Motdep4sse!'
             ])
         );
@@ -85,7 +86,7 @@ final class AppResetPasswordTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'user@mail.com',
-                'password' => 'Pass!1'
+                'password' => 'Pass!1' // mot de passe trop court
             ])
         );
         $response = $this->client->getResponse();
@@ -98,7 +99,7 @@ final class AppResetPasswordTest extends WebTestCase
 
         $user = new User();
         $user->setEmail('user@mail.com');
-        $user->setPassword('MotdePasse!123'); // mot de passe initial (hashé si besoin)
+        $user->setPassword('MotdePasse!123'); // mot de passe initial
         $user->setRoles(['ROLE_USER']);
         $this->em->persist($user);
         $this->em->flush();
@@ -110,7 +111,7 @@ final class AppResetPasswordTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'user@mail.com'
+                'email' => 'user@mail.com' // email existant
             ])
         );
         $response = $this->client->getResponse();
@@ -122,7 +123,7 @@ final class AppResetPasswordTest extends WebTestCase
     {
         $user = new User();
         $user->setEmail('user@mail.com');
-        $user->setPassword('MotdePasse!123'); // mot de passe initial (hashé si besoin)
+        $user->setPassword('MotdePasse!123'); // mot de passe initial
         $user->setRoles(['ROLE_USER']);
         $this->em->persist($user);
         $this->em->flush();
@@ -135,7 +136,7 @@ final class AppResetPasswordTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'user11@mail.com'
+                'email' => 'user11@mail.com' // email non existant
             ])
         );
         $response = $this->client->getResponse();

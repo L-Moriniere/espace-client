@@ -63,7 +63,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'pas-un-email',
-                'password' => 'Motdep4sse!'
+                'password' => 'Motdep4sse!' // mot de passe valide
             ])
         );
 
@@ -84,7 +84,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'short@mail.com',
-                'password' => 'Pass!1'
+                'password' => 'Pass!1' // mot de passe trop court
             ])
         );
         $response = $this->client->getResponse();
@@ -101,7 +101,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'noUpper@mail.com',
-                'password' => 'password!!123'
+                'password' => 'password!!123' // pas de majuscule
             ])
         );
         $response = $this->client->getResponse();
@@ -118,7 +118,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'noDigit@mail.com',
-                'password' => 'Password!!'
+                'password' => 'Password!!' // pas de chiffre
             ])
         );
         $response = $this->client->getResponse();
@@ -135,7 +135,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'noSpecial@mail.com',
-                'password' => 'Password123'
+                'password' => 'Password123' // pas de caractère spécial
             ])
         );
         $response = $this->client->getResponse();
@@ -152,7 +152,7 @@ final class AppRegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => 'empty@mail.com',
-                'password' => ''
+                'password' => '' // mot de passe vide
             ])
         );
         $response = $this->client->getResponse();
