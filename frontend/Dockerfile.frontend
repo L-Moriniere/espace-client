@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copie les fichiers de dépendances
 COPY package*.json ./
-RUN npm install && npm install @tailwindcss/postcss
+RUN npm install
 
 # Copie le code source du frontend
 COPY . .

@@ -52,9 +52,13 @@ final class AppController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register', methods: ['POST'])]
-    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, ValidatorInterface $validator): JsonResponse
+    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, ValidatorInterface $validator, UserRepository $userRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        if ($userRepository->findOneBy(['email' => $data['email'] ?? ''])) {
+            return $this->json(['message' => 'Email déjà utilisé'], 422);
+        }
 
         $user = new User();
         $user->setEmail($data['email']);
@@ -66,6 +70,19 @@ final class AppController extends AbstractController
         }
         $user->setRoles(['ROLE_USER']);
         return $this->persistUser($em, $user, $data['password'], $hasher);
+    }
+
+    #[Route('/request-reset-password', name: 'app_request_reset_password', methods: ['POST'])]
+    public function requestResetPassword(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy(['email' => $data['email'] ?? '']);
+        if (!$user) {
+            return $this->json(['message' => 'Utilisateur non trouvé'], 422);
+        }
+
+        return $this->json(['message' => 'Lien de réinitialisation du mot de passe envoyé à votre adresse email'], 200);
+
     }
 
 
@@ -120,11 +137,10 @@ final class AppController extends AbstractController
         $message->setSubject($subject);
         $message->setMessage($content);
         $message->setSentAt(new \DateTime('now'));
-        $message->setAttachmentFileName($file->getClientOriginalName());
-        $message->setAttachmentSize($file->getSize());
 
         // vérifications sur le fichier (type, taille, existence)
         if ($file){
+
             $fileSize = $file->getSize();
             $maxSize = 2 * 1024 * 1024; //2Mo max
 
@@ -154,6 +170,8 @@ final class AppController extends AbstractController
                 return $this->json(['message' => 'Le fichier joint n’existe pas ou n’est pas lisible.'], 422);
             }
             $email->attachFromPath($filePath, $file->getClientOriginalName());
+            $message->setAttachmentFileName($file->getClientOriginalName());
+            $message->setAttachmentSize($file->getSize());
         }
 
         // limite d'envoi à 1 message par heure

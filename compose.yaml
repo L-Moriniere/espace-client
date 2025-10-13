@@ -21,12 +21,15 @@ services:
 
   frontend:
     build:
-      context: ./frontend # Construit l'image à partir du dossier frontend
+      context: ./frontend
       dockerfile: Dockerfile.frontend
     container_name: frontend_vue
     restart: unless-stopped
     ports:
         - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     entrypoint: ["npm", "run", "dev"]
 
 
