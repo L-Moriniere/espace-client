@@ -9,6 +9,11 @@ RUN apt-get update && apt-get install -y \
     libsodium-dev \
     && docker-php-ext-install pdo pdo_mysql sodium
 
+#Fuseau horaire de Paris
+ENV TZ=Europe/Paris
+# Configuration du fuseau horaire
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Installation de Composer (gestionnaire de dépendances PHP)
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 

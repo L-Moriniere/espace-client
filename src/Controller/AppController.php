@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Validator\Exception\ValidationException;
 use App\Entity\Message;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -10,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -51,6 +49,7 @@ final class AppController extends AbstractController
         return $this->json(['message' => $successMessage], 201);
     }
 
+    //Inscription d'un nouvel utilisateur
     #[Route('/register', name: 'app_register', methods: ['POST'])]
     public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, ValidatorInterface $validator, UserRepository $userRepository): JsonResponse
     {
@@ -72,6 +71,7 @@ final class AppController extends AbstractController
         return $this->persistUser($em, $user, $data['password'], $hasher);
     }
 
+    //Demande de réinitialisation du mot de passe
     #[Route('/request-reset-password', name: 'app_request_reset_password', methods: ['POST'])]
     public function requestResetPassword(Request $request, UserRepository $userRepository): JsonResponse
     {
@@ -86,6 +86,7 @@ final class AppController extends AbstractController
     }
 
 
+    //Réinitialisation du mot de passe
     #[Route('/reset-password', name: 'app_reset_password')]
     public function resetPassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher,
                                   ValidatorInterface $validator, UserRepository $userRepository): JsonResponse
@@ -106,6 +107,7 @@ final class AppController extends AbstractController
         return $this->persistUser($em, $user, $data['password'], $hasher, 'Mot de passe réinitialisé avec succès');
     }
 
+    //Route pour envoyer un message avec pièce jointe
     #[Route('/send-message', name: 'app_send_message', methods: ['POST'])]
     public function sendMessage(Request $request, MailerInterface $mailer, EntityManagerInterface $em, UserRepository $userRepository): JsonResponse
     {
