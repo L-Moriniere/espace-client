@@ -93,4 +93,53 @@ final class AppResetPasswordTest extends WebTestCase
     }
 
 
+    public function testRequestPasswordSuccess(): void
+    {
+
+        $user = new User();
+        $user->setEmail('user@mail.com');
+        $user->setPassword('MotdePasse!123'); // mot de passe initial (hashé si besoin)
+        $user->setRoles(['ROLE_USER']);
+        $this->em->persist($user);
+        $this->em->flush();
+
+        $this->client->request(
+            'POST',
+            '/api/request-reset-password',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'email' => 'user@mail.com'
+            ])
+        );
+        $response = $this->client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+
+    }
+
+    public function testRequestPasswordFail(): void
+    {
+        $user = new User();
+        $user->setEmail('user@mail.com');
+        $user->setPassword('MotdePasse!123'); // mot de passe initial (hashé si besoin)
+        $user->setRoles(['ROLE_USER']);
+        $this->em->persist($user);
+        $this->em->flush();
+
+
+        $this->client->request(
+            'POST',
+            '/api/request-reset-password',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'email' => 'user11@mail.com'
+            ])
+        );
+        $response = $this->client->getResponse();
+        $this->assertEquals(422, $response->getStatusCode());
+
+    }
 }

@@ -23,3 +23,4 @@ phpstan.neon
 ###< phpstan/phpstan ###
 /.idea
 .idea
+/node_modules
