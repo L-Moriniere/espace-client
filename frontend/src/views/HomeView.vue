@@ -50,7 +50,7 @@
 import { ref } from 'vue'
 import api from '@/services/api'
 import '@/assets/mgp.css' // Chemin vers votre fichier CSS
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const subject = ref('')
 const message = ref('')
@@ -59,13 +59,11 @@ const fileError = ref('')
 const successMessage = ref('')
 const error = ref('')
 const isSubmitting = ref(false)
-const router = useRouter();
-
+const router = useRouter()
 
 function handleFileChange(event) {
   fileError.value = ''
   const selectedFile = event.target.files[0]
-
 
   if (selectedFile) {
     if (selectedFile.type !== 'application/pdf') {
@@ -97,9 +95,7 @@ async function onSubmit() {
   isSubmitting.value = true
 
   try {
-    const res = await api.post('/send-message', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    await api.post('/send-message', formData)
 
     successMessage.value = 'Message envoyé avec succès !'
     subject.value = ''
@@ -109,7 +105,8 @@ async function onSubmit() {
   } catch (err) {
     if (err.response && err.response.data) {
       // Affiche uniquement le message d'erreur texte
-      error.value = err.response.data.message || err.response.data.error || 'Une erreur est survenue.'
+      error.value =
+        err.response.data.message || err.response.data.error || 'Une erreur est survenue.'
     } else {
       error.value = 'Erreur réseau ou serveur.'
     }
@@ -117,8 +114,6 @@ async function onSubmit() {
     isSubmitting.value = false
   }
 }
-
-
 
 function logout() {
   localStorage.removeItem('token')

@@ -18,7 +18,9 @@ const props = defineProps({
   duration: { type: Number, default: 3000 } // durée avant disparition
 })
 
+//flash disabled by default
 const visible = ref(false)
+//ajoute la classe flash success
 const typeClass = computed(() => 'flash-success')
 
 // Disparition après la durée définie
