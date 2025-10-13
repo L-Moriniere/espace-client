@@ -44,6 +44,7 @@ async function handleRegister({ email, password }) {
       })
     }
   } catch (err) {
+    console.log(err)
     error.value = err.response.data.message
   }
 }

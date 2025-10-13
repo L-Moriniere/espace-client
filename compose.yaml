@@ -41,11 +41,12 @@ services:
       MYSQL_DATABASE: db_mgp
       MYSQL_USER: user
       MYSQL_PASSWORD: mgp_p4ssW0rd!
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: mgp_p4ssW0rd!
     ports:
       - "3306:3306"
     volumes:
       - database_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d # Pour initialiser la base de données test avec un script SQL
 ###< doctrine/doctrine-bundle ###
 
   mailhog:

@@ -34,4 +34,5 @@ EXPOSE 8000
 # Commande de démarrage du serveur Symfony avec migration automatique
 CMD composer install --no-interaction --prefer-dist --optimize-autoloader \
     && php bin/console doctrine:migrations:migrate --no-interaction \
+    && php bin/console doctrine:migrations:migrate --env=test --no-interaction \
     && php -S 0.0.0.0:8000 -t public

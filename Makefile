@@ -1,5 +1,3 @@
-# Makefile pour projet Symfony + Docker + Frontend Vue
-
 up:
 	docker compose up -d
 
@@ -24,13 +22,9 @@ lint:
 	cd frontend && npm run lint
 
 test:
-	php bin/phpunit
+	docker exec -it symfony_api php bin/phpunit
 
-frontend:
-	cd frontend && npm run dev
 
-mailhog:
-	@echo "Accès à MailHog : http://localhost:8025"
 
-.PHONY: up down restart install migrate cache-clear lint phpstan test frontend mailhog
+.PHONY: up down restart install migrate cache-clear lint phpstan test
 
