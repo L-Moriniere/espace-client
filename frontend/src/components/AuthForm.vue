@@ -71,25 +71,3 @@ function onSubmit() {
 }
 </script>
 
-<style scoped>
-button {
-  position: relative;
-  padding: 0.5em 1em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(0,0,0,0.2);
-  border-top-color: rgba(0,0,0,0.7);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-</style>
